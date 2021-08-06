@@ -5,7 +5,7 @@ Spotify interface dose not show the genres of the song. So I made a website that
 [Demo](http://get-spotify-genres.medina.network/)
 
 
-
-
 - [ ] Make it so You can just search song name
 - [ ] Let you hit enter to search.
+- [ ] Add Features for a Track
+- [ ] Seach Playlist For genres and create list of artist of that genres
