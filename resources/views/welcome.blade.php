@@ -3,8 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <meta name="title" content="Get Spotify Genres">
+        <meta name="description" content="Want to see what Spotify don't want you to know? It is genres.">
+        <meta name="keywords" content="Spotify, genres, api, laravel">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="English">
+        <meta name="author" content="Martin A Medina">
+        
 
-        <title>Laravel</title>
+        <title>Get Spotify Genres</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">

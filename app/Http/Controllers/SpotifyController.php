@@ -16,35 +16,31 @@ class SpotifyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-
-
         return view('dashboard.pages.spotify');
-
     }
     public function check(Request $request) {
-        //$books = Book::All();
-        //return dd("test");
+
         $auth_data = array(
             'grant_type' 		=> 'client_credentials',
-            'client_id' 		=> env(SPOTIFY_CLIENT_ID),
-            'client_secret' 	=> env(SPOTIFY_CLIENT_SECRET),
+            'client_id' 		=> env('SPOTIFY_CLIENT_ID'),
+            'client_secret' 	=> env('SPOTIFY_CLIENT_SECRET'),
             
         );
         $auth_data = http_build_query($auth_data, '', '&');
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-        CURLOPT_URL => "https://accounts.spotify.com/api/token",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => $auth_data,
-        CURLOPT_HTTPHEADER => [
-            "Content-Type: application/x-www-form-urlencoded"
-        ],
+            CURLOPT_URL => "https://accounts.spotify.com/api/token",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $auth_data,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: application/x-www-form-urlencoded"
+            ],
         ]);
 
         $response = curl_exec($curl);
@@ -58,8 +54,6 @@ class SpotifyController extends Controller
             $access_token = json_decode($response)->access_token;
         }
 
-        //files\import\MP3 Audiobooks
-        //https://www.audible.com/search?keywords=asdfasdf&ref=a_hp_t1_header_search
         if($request->song != null) {
             //https://open.spotify.com/track/2JPLbjOn0wPCngEot2STUS?si=2cafbfd25782490b
             $track_id = str_replace('https://open.spotify.com/track/', '', $request->song);
@@ -92,6 +86,8 @@ class SpotifyController extends Controller
               echo "cURL Error #:" . $err;
             } else {
                 $data = json_decode($response);
+                $file_name = "/save/track/".date("m-d-y_g-i-a").".json";
+                Storage::put($file_name, json_encode($data), 'public');
                 $artists_id = collect($data->artists)->first()->id;
             }
         }
@@ -130,6 +126,8 @@ class SpotifyController extends Controller
               echo "cURL Error #:" . $err;
             } else {
                 $data = json_decode($response);
+                $file_name = "/save/artists/".date("m-d-y_g-i-a").".json";
+                Storage::put($file_name, json_encode($data), 'public');
                 return $data;
             }
         }

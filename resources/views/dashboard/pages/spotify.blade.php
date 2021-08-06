@@ -55,30 +55,36 @@
     </div>
     @push('scripts')
         <script>
-                   
         $("[name=show_me]").on('click', function (e) {
-            var CSRF_TOKEN = $("input[name=_token]").val();
+            if($("[name=song]").val() != "" || $("[name=artist]").val() != "") {
+                var CSRF_TOKEN = $("input[name=_token]").val();
+                var url = "{{ url('/spotify_wow') }}";
+                var formData = { 
+                    "_token": CSRF_TOKEN, 
+                    "song": $("[name=song]").val(), 
+                    "artist": $("[name=artist]").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    dataType: "json",
+                    data:formData,
+                    success: function(data) {
+                        $("[name=output]").children().remove();
+                        if(data.genres.length > 0) {
+                            data.genres.forEach(function(element) {
+                                $("[name=output]").append('<li class="list-group-item">'+element+'</li>');
+                            })
+                        } else {
+                            $("[name=output]").append('<li class="list-group-item">No Genres</li>');
+                        }
+                    }
+                });
+            } else {
 
-            var url = "{{ url('/spotify_wow') }}";
-            var formData = { 
-                "_token": CSRF_TOKEN, 
-                "song": $("[name=song]").val(), 
-                "artist": $("[name=artist]").val()
-            };
-            $.ajax({
-                type: "POST",
-                url: url,
-                dataType: "json",
-                data:formData,
-                success: function(data) {
-                    $("[name=output]").children().remove();
-                    data.genres.forEach(function(element) {
-                        $("[name=output]").append('<li class="list-group-item">'+element+'</li>');
-                    })
+            }
 
-                    
-                }
-            });
+
         });
         </script>
     @endpush
