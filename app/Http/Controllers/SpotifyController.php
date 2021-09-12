@@ -125,7 +125,54 @@ class SpotifyController extends Controller
             if ($err) {
               echo "cURL Error #:" . $err;
             } else {
+
                 $data = json_decode($response);
+
+                $genres = array();
+
+
+                foreach($data->genres as $genre) {
+
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, [
+                      CURLOPT_URL => "https://api.spotify.com/v1/recommendations?limit=10&market=US&seed_artists=".$artists_id."&seed_genres=".$genre,
+                      CURLOPT_RETURNTRANSFER => true,
+                      CURLOPT_ENCODING => "",
+                      CURLOPT_MAXREDIRS => 10,
+                      CURLOPT_TIMEOUT => 30,
+                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                      CURLOPT_CUSTOMREQUEST => "GET",
+                      CURLOPT_POSTFIELDS => "",
+                      CURLOPT_HTTPHEADER => [
+                        "Authorization: Bearer ".$access_token
+                      ],
+                    ]);
+                    
+                    $response = curl_exec($curl);
+                    $err = curl_error($curl);
+                    
+                    curl_close($curl);
+                    
+                    if ($err) {
+                      echo "cURL Error #:" . $err;
+                    } else {
+                        $info = json_decode($response);
+                        $genres[] = array(
+                            'title' => $genre,
+                            'info' => $info
+                        );
+            
+                    }
+                    
+                }
+
+
+
+
+                $data->genres = $genres;
+
+                
                 $file_name = "/save/artists/".date("m-d-y_g-i-a").".json";
                 Storage::put($file_name, json_encode($data), 'public');
                 return $data;
@@ -133,3 +180,7 @@ class SpotifyController extends Controller
         }
     }
 }
+
+/**
+ * https://api.spotify.com/v1/recommendations?limit=10&market=ES&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccou
+ */
